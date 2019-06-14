@@ -3,6 +3,17 @@ require 'byebug'
 
 class KnightPathFinder
 
+  MOVES = [
+    [-1, -2], 
+    [-2, -1], 
+    [-2, +1], 
+    [-1, +2], 
+    [+1, -2], 
+    [+2, -1], 
+    [+2, +1], 
+    [+1, +2]
+  ]
+
   def initialize(pos)
     @root_node = PolyTreeNode.new(pos)
     @considered_positions = [pos]
@@ -26,25 +37,27 @@ class KnightPathFinder
   def self.valid_moves(pos)
     valid_moves = []
     row, col = pos
-    valid_moves << [row - 1, col - 2] if (row - 1 >= 0 && col - 2 >= 0) && (row - 1 <= 7 && col - 2 <= 7)
-    valid_moves << [row - 2, col - 1] if (row - 2 >= 0 && col - 1 >= 0) && (row - 2 <= 7 && col - 1 <= 7)
-    valid_moves << [row - 2, col + 1] if (row - 2 >= 0 && col + 1 >= 0) && (row - 2 <= 7 && col + 1 <= 7)
-    valid_moves << [row - 1, col + 2] if (row - 1 >= 0 && col + 2 >= 0) && (row - 1 <= 7 && col + 2 <= 7)
-    valid_moves << [row + 1, col - 2] if (row + 1 >= 0 && col - 2 >= 0) && (row + 1 <= 7 && col - 2 <= 7)
-    valid_moves << [row + 2, col - 1] if (row + 2 >= 0 && col - 1 >= 0) && (row + 2 <= 7 && col - 1 <= 7)
-    valid_moves << [row + 2, col + 1] if (row + 2 >= 0 && col + 1 >= 0) && (row + 2 <= 7 && col + 1 <= 7)
-    valid_moves << [row + 1, col + 2] if (row + 1 >= 0 && col + 2 >= 0) && (row + 1 <= 7 && col + 2 <= 7)
+    MOVES.each do |dx, dy|
+      valid_moves << [row + dx, col + dy] if (0..7).include?(row + dx) && (0..7).include?(col + dy)
+    end
     valid_moves
   end
 
   def new_move_positions(pos)
     moves = KnightPathFinder.valid_moves(pos) 
-    new_moves = moves.select { |move| !@considered_positions.include?(move) }
+    new_moves = moves.reject { |move| @considered_positions.include?(move) }
     @considered_positions += new_moves
     new_moves
   end
 
+  def find_path(end_pos)
+    dfs
+  end
+
+  def trace_path_back(node)
+  end
+
 end
 
-kpf = KnightPathFinder.new([4, 3])
-p kpf.new_move_positions([7,4])
+kpf = KnightPathFinder.new([0, 0])
+p kpf.new_move_positions([7,7])

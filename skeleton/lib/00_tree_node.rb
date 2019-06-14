@@ -40,11 +40,29 @@ class PolyTreeNode
   def dfs(target_value)
     return self if self.value == target_value
     self.children.each do |child|
-      child.dfs(target_value)
+      found = child.dfs(target_value)
+      return found unless found.nil?
     end
+    nil
+  end
+
+  def inspect
+    { 'value' => @value, 'parent_value' => @parent.value }.inspect
   end
 
   def bfs(target_value)
+    queue = []
+    queue << self
+    debugger
+    queue.each do |node|
+    #until queue.empty?
+      shifted = queue.shift
+      return shifted if shifted.value == target_value
+      node.children.each do |child|
+        queue << child
+      end 
+    end
+    nil
   end
 
 end
